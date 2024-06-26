@@ -1,0 +1,14 @@
+## My stuff
+*.DS_Store
+.build
+Icon?
+*.psd
+*.pxm
+export/
+archive/
+Icon/
+Art/
+
+## Xcode
+# User settings
+xcuserdata/
