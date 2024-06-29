@@ -47,7 +47,7 @@ extension ChordProEditor {
                     width: bounds.width,
                     height: fragment.layoutFragmentFrame.height
                 )
-                context.setFillColor(ChordProEditor.highlightedBackgroundColor.cgColor)
+                context.setFillColor(ChordProEditor.highlightedForegroundColor.cgColor)
                 context.fill(lineRect)
             }
             super.draw(dirtyRect)

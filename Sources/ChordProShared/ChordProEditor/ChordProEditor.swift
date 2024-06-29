@@ -58,6 +58,7 @@ public struct ChordProEditor: NSViewRepresentable {
         if context.coordinator.parent.settings != settings {
             context.coordinator.parent = self
             highlightText(textView: view.textView)
+            view.textView.setFragmentInformation(selectedRange: view.textView.selectedRange())
             view.textView.chordProEditorDelegate?.selectionNeedsDisplay()
         }
     }

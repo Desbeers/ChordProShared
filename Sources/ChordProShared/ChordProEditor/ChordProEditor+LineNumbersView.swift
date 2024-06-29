@@ -45,7 +45,7 @@ extension ChordProEditor {
             context.setFillColor(ChordProEditor.highlightedBackgroundColor.cgColor)
             context.fill(bounds)
             /// Draw a border on the right
-            context.setStrokeColor(ChordProEditor.highlightedForegroundColor.cgColor)
+            context.setStrokeColor(NSColor.secondaryLabelColor.cgColor)
             context.setLineWidth(0.5)
             context.move(to: CGPoint(x: bounds.width - 1, y: 0))
             context.addLine(to: CGPoint(x: bounds.width - 1, y: bounds.height))
@@ -83,6 +83,7 @@ extension ChordProEditor {
 
             var attributes = ChordProEditor.rulerNumberStyle
             attributes[NSAttributedString.Key.font] = font
+            attributes[NSAttributedString.Key.baselineOffset] = ChordProEditor.baselineOffset(fontSize: font.pointSize)
             var number = 1
             var lineRect = CGRect()
             for paragraph in paragraphs {
@@ -107,11 +108,11 @@ extension ChordProEditor {
                 }
 
                 if paragraph.layoutFragmentFrame == selectedTextLayoutFragment?.layoutFragmentFrame {
-                    context.setFillColor(ChordProEditor.highlightedBackgroundColor.cgColor)
+                    context.setFillColor(ChordProEditor.highlightedForegroundColor.cgColor)
                     context.fill(lineRect)
                     attributes[NSAttributedString.Key.foregroundColor] = NSColor.textColor
                 } else {
-                    attributes[NSAttributedString.Key.foregroundColor] = NSColor.gray
+                    attributes[NSAttributedString.Key.foregroundColor] = NSColor.secondaryLabelColor
                 }
 
                 lineRect.origin.x = 5
@@ -119,7 +120,7 @@ extension ChordProEditor {
                 if let directive {
                     let imageAttachment = NSTextAttachment()
                     var imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.8, weight: .light)
-                    imageConfiguration = imageConfiguration.applying(.init(paletteColors: [.textColor, .systemGray]))
+                    imageConfiguration = imageConfiguration.applying(.init(paletteColors: [.secondaryLabelColor, .secondaryLabelColor]))
                     imageAttachment.image = NSImage(systemName: directive.icon).withSymbolConfiguration(imageConfiguration)
                     let  imageString = NSMutableAttributedString(attachment: imageAttachment)
                     let offset = (font.pointSize * 1.4) - font.pointSize

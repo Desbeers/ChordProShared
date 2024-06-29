@@ -18,10 +18,12 @@ extension ChordProEditor {
     static let paragraphStyle: NSParagraphStyle = {
         let style = NSMutableParagraphStyle()
         style.lineHeightMultiple = ChordProEditor.lineHeightMultiple
-        //style.lineSpacing = 10
-        //style.maximumLineHeight = 12
         return style
     }()
+
+    static func baselineOffset(fontSize: Double) -> Double {
+        return ((fontSize * ChordProEditor.lineHeightMultiple) - fontSize) * 3
+    }
 
     /// The style of a number in the ruler
     static var rulerNumberStyle: SWIFTStringAttribute {
@@ -50,7 +52,7 @@ extension ChordProEditor {
     }
 
     /// The foreground of the highlighted line in the editor
-    static let highlightedForegroundColor: NSColor = .gray.withAlphaComponent(0.9)
+    static let highlightedForegroundColor: NSColor = .controlAccentColor.withAlphaComponent(0.06)
 
     /// The background of the highlighted line in the editor
     static let highlightedBackgroundColor: NSColor = .gray.withAlphaComponent(0.1)
