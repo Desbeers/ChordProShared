@@ -1,8 +1,8 @@
 //
-//  MacEditorView+Settings.swift
-//  Chord Provider
+//  ChordProEditor+Settings.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import SwiftUI
@@ -49,7 +49,7 @@ extension ChordProEditor {
 }
 
 extension ChordProEditor.Settings {
-    public enum FontStyle: String, CaseIterable, Codable {
+    public enum FontStyle: String, CaseIterable, Codable, Sendable {
         /// Use a monospaced font
         case monospaced = "Monospaced"
         /// Use a serif font
@@ -58,16 +58,25 @@ extension ChordProEditor.Settings {
         case sansSerif = "Sans Serif"
         /// The calculated font for the `EditorView`
         public func nsFont(size: Double) -> NSFont {
-            var descriptor = NSFontDescriptor()
+            var descriptor: NSFontDescriptor?
             switch self {
             case .monospaced:
-                descriptor = NSFont.systemFont(ofSize: size).fontDescriptor.addingAttributes().withDesign(.monospaced)!
+                descriptor = NSFontDescriptor
+                    .preferredFontDescriptor(forTextStyle: .body)
+                    .withDesign(.monospaced)
             case .serif:
-                descriptor = NSFont.systemFont(ofSize: size).fontDescriptor.addingAttributes().withDesign(.serif)!
+                descriptor = NSFontDescriptor
+                    .preferredFontDescriptor(forTextStyle: .body)
+                    .withDesign(.serif)
             case .sansSerif:
-                descriptor = NSFont.systemFont(ofSize: size).fontDescriptor.addingAttributes().withDesign(.default)!
+                descriptor = NSFontDescriptor
+                    .preferredFontDescriptor(forTextStyle: .body)
+                    .withDesign(.default)
             }
-            return NSFont(descriptor: descriptor, size: size)!
+            if let descriptor, let font = NSFont(descriptor: descriptor, size: size) {
+                return font
+            }
+            return NSFont.systemFont(ofSize: size)
         }
         /// The calculated font for the `SettingsView`
         public func font(size: Double) -> Font {

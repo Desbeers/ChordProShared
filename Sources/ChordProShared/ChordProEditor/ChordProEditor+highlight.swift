@@ -1,12 +1,11 @@
 //
-//  MacEditorView+highlight.swift
-//  ChordProMac
+//  ChordProEditor+highlight.swift
+//  ChordProShared
 //
-//  Created by Nick Berendsen on 11/06/2024.
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import AppKit
-import ChordProShared
 
 extension ChordProEditor {
 
@@ -33,15 +32,6 @@ extension ChordProEditor {
 
     // swiftlint:enable force_try
 
-    /// The line height multiplier for the editor text
-    static let lineHeightMultiple: Double = 1.2
-    /// The style of a paragraph in the editor
-    static let paragraphStyle: NSParagraphStyle = {
-        let style = NSMutableParagraphStyle()
-        style.lineHeightMultiple = ChordProEditor.lineHeightMultiple
-        return style
-    }()
-
     // swiftlint: disable:next large_tuple
     static func regexes(settings: Settings) -> [(regex: NSRegularExpression, color: NSColor, regexType: RegexType)] {
         return [
@@ -64,7 +54,7 @@ extension ChordProEditor {
     @MainActor static func highlight(
         view: NSTextView,
         settings: Settings,
-        font: NSFont,
+        //font: NSFont,
         range: NSRange, 
         directives: [ChordProDirective]
     ) {
@@ -111,25 +101,6 @@ extension ChordProEditor {
                         )
                     }
                 }
-
-
-//                if regex.argument {
-//                    if let swiftRange = Range(match.range, in: text) {
-//                        view.textStorage?.addAttributes(
-//                            [
-//                                .foregroundColor: regex.color,
-//                                .directiveArgument: text[swiftRange]
-//                            ],
-//                            range: match.range
-//                        )
-//                    }
-//                } else {
-//                    view.textStorage?.addAttribute(
-//                        .foregroundColor,
-//                        value: regex.color,
-//                        range: match.range
-//                    )
-//                }
             }
         }
 

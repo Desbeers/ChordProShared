@@ -12,8 +12,8 @@ import UniformTypeIdentifiers
 public protocol UserFile {
     /// The ID of the user file
     var id: String { get }
-    /// The `UTType` of the file
-    var utType: UTType { get }
+    /// The `UTType`s of the file
+    var utTypes: [UTType] { get }
     /// The optional calculated label of the file
     var label: String? { get }
     /// The SF icon of the file

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import OSLog
+import UniformTypeIdentifiers
 
 /// Persistent user file bookmark utilities
 public enum UserFileBookmark {
@@ -44,7 +45,7 @@ extension UserFileBookmark {
 
     /// Set an bookmark URL
     /// - Parameters:
-    ///   - bookmark: The ``CustomFile``
+    ///   - bookmark: The ``UserFile``
     ///   - selectedURL: The URL to set
     static func setBookmarkURL<T: UserFile>(_ bookmark: T, _ selectedURL: URL) {
         do {
@@ -68,7 +69,7 @@ extension UserFileBookmark {
     /// Stop access to a persistent URL after some time
     /// - Parameter persistentURL: The `URL` that has accessed
     /// - Note: Always call this function after you are done with the access or else Apple will be really upset!
-    static func stopCustomFileAccess(persistentURL: URL) {
+    public static func stopCustomFileAccess(persistentURL: URL) {
         Task {
             try? await Task.sleep(nanoseconds: 5_000_000_000)
             persistentURL.stopAccessingSecurityScopedResource()

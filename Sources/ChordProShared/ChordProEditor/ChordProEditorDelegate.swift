@@ -1,8 +1,8 @@
 //
-//  MacEditorDelegate.swift
-//  Chord Provider
+//  ChordProEditorDelegate.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import Foundation
@@ -12,6 +12,5 @@ import Foundation
 protocol ChordProEditorDelegate {
 
     /// A delegate function to update a view
-    @MainActor
-    func selectionNeedsDisplay()
+    @MainActor func selectionNeedsDisplay()
 }

@@ -10,4 +10,6 @@ import Foundation
 enum AppError: String, LocalizedError {
     case userFileNotFound
     case writeDocumentError
+    case noKeyWindow
+    case noFolderSelected
 }

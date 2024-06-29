@@ -1,8 +1,8 @@
 //
-//  MacEditorView+Static.swift
-//  Chord Provider
+//  ChordProEditor+Static.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import SwiftUI
@@ -11,16 +11,17 @@ extension ChordProEditor {
 
     // MARK: Static settings for the editor
 
-//    /// The line height multiplier for the editor text
-//    static let lineHeightMultiple: Double = 1.2
-//
-//    /// The style of a paragraph in the editor
-//    static let paragraphStyle: NSParagraphStyle = {
-//        let style = NSMutableParagraphStyle()
-//        style.lineHeightMultiple = MacEditorView.lineHeightMultiple
-//        style.headIndent = 10
-//        return style
-//    }()
+    /// The line height multiplier for the editor text
+    static let lineHeightMultiple: Double = 1.2
+
+    /// The style of a paragraph in the editor
+    static let paragraphStyle: NSParagraphStyle = {
+        let style = NSMutableParagraphStyle()
+        style.lineHeightMultiple = ChordProEditor.lineHeightMultiple
+        //style.lineSpacing = 10
+        //style.maximumLineHeight = 12
+        return style
+    }()
 
     /// The style of a number in the ruler
     static var rulerNumberStyle: SWIFTStringAttribute {
@@ -49,8 +50,8 @@ extension ChordProEditor {
     }
 
     /// The foreground of the highlighted line in the editor
-    static let highlightedForegroundColor: NSColor = .textColor.withAlphaComponent(0.3)
+    static let highlightedForegroundColor: NSColor = .gray.withAlphaComponent(0.9)
 
     /// The background of the highlighted line in the editor
-    static let highlightedBackgroundColor: NSColor = .textColor.withAlphaComponent(0.03)
+    static let highlightedBackgroundColor: NSColor = .gray.withAlphaComponent(0.1)
 }

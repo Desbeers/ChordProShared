@@ -6,37 +6,42 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
-import OSLog
 
 /// SwiftUI `View`to select a file
+///
+/// I don't use the `SwiftUI` '.fileImporter' here because it is too limited;
+/// especially on macOS versions lower than 14.
+/// So, I just call a good o'l NSOpenPanel here.`
+///
 /// - Note: A file can be a *normal* file but also a folder
 public struct UserFileButtonView<T: UserFile>: View {
-
+    /// Public init
     public init(bookmark: T, action: @escaping () -> Void) {
         self.bookmark = bookmark
         self.action = action
     }
-    /// The file to bookmark
+    /// The bookmark to select
     let bookmark: T
     /// The action when a file is selected
     let action: () -> Void
-    /// Bool to show the file importer sheet
-    @State private var isPresented: Bool = false
+    /// The label of the button
+    @State private var label: String?
     /// The body of the `View`
     public var body: some View {
         Button(
             action: {
-                isPresented.toggle()
+                Task {
+                    if let url = try? await Utils.openPanel(bookmark: bookmark, action: action) {
+                        label = url.deletingPathExtension().lastPathComponent
+                    }
+                }
             },
             label: {
-                Label(bookmark.label ?? "Select", systemImage: bookmark.icon)
+                Label(label ?? "Select", systemImage: bookmark.icon)
             }
         )
-        .selectFileSheet(
-            isPresented: $isPresented,
-            bookmark: bookmark,
-            action: action
-        )
+        .task {
+            label = bookmark.label
+        }
     }
 }

@@ -1,12 +1,11 @@
 //
-//  MacEditorView+LineNumbersView.swift
-//  Chord Provider
+//  ChordProEditor+LineNumbersView.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import AppKit
-import ChordProShared
 
 extension ChordProEditor {
 
@@ -67,7 +66,7 @@ extension ChordProEditor {
                 return
             }
 
-            let font = textView.font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
+            let font = NSFont.monospacedSystemFont(ofSize: textView.font?.pointSize ?? NSFont.systemFontSize, weight: .ultraLight)
 
             let relativePoint = self.convert(NSPoint.zero, from: textView)
 
@@ -112,7 +111,7 @@ extension ChordProEditor {
                     context.fill(lineRect)
                     attributes[NSAttributedString.Key.foregroundColor] = NSColor.textColor
                 } else {
-                    attributes[NSAttributedString.Key.foregroundColor] = ChordProEditor.highlightedForegroundColor
+                    attributes[NSAttributedString.Key.foregroundColor] = NSColor.gray
                 }
 
                 lineRect.origin.x = 5

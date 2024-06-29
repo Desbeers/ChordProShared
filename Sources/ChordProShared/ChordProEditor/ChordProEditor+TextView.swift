@@ -1,12 +1,11 @@
 //
-//  MacEditorView+TextView.swift
-//  Chord Provider
+//  ChordProEditor+TextView.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import SwiftUI
-import ChordProShared
 
 extension ChordProEditor {
 
@@ -26,14 +25,14 @@ extension ChordProEditor {
 
         var currentDirective: ChordProDirective?
 
-        var currentDirectiveArgument: String?
+        var currentDirectiveArgument: String = ""
         var currentDirectiveRange: NSRange?
 
         /// The current fragment of the cursor
         var currentFragment: NSTextLayoutFragment?
 
-        /// The optional clicked fragment in the editor
-        var clickedFragment: Bool = false
+        /// The optional double-clicked directive in the editor
+        var clickedDirective: Bool = false
 
         // MARK: Override functions
 
@@ -57,18 +56,22 @@ extension ChordProEditor {
         /// Handle double-click on directives to edit them
         /// - Parameter event: The mouse click event
         public override func mouseDown(with event: NSEvent) {
-            guard
-                event.clickCount == 2
-            else {
-                clickedFragment = false
+            setFragmentInformation(selectedRange: selectedRange())
+            if event.clickCount == 2, let currentDirective, currentDirective.editable == true {
+                clickedDirective = true
+                parent?.runIntrospect(self)
+            } else {
+                clickedDirective = false
                 return super.mouseDown(with: event)
             }
-            setFragmentInformation(selectedRange: selectedRange())
-            clickedFragment = true
-            parent?.runIntrospect(self)
         }
 
-        // MARK: Private functions
+        // MARK: Custom functions
+
+        public func replaceText(text: String) {
+            let composeText = self.string as NSString
+            self.insertText(text, replacementRange: NSRange(location: 0, length: composeText.length))
+        }
 
         /// Set the fragment information
         /// - Parameter selectedRange: The current selected range of the text editor
@@ -87,7 +90,7 @@ extension ChordProEditor {
             else {
                 currentFragment = nil
                 currentDirective = nil
-                currentDirectiveArgument = nil
+                currentDirectiveArgument = ""
                 currentDirectiveRange = nil
                 return
             }
@@ -116,7 +119,7 @@ extension ChordProEditor {
             }
 
             currentDirective = directive
-            currentDirectiveArgument = directiveArgument?.trimmingCharacters(in: .whitespacesAndNewlines)
+            currentDirectiveArgument = directiveArgument?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             currentDirectiveRange = directiveRange
 
             currentFragment = fragment

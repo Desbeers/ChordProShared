@@ -1,8 +1,8 @@
 //
-//  MacEditorView+Wrapper.swift
-//  Chord Provider
+//  ChordProEditor+Wrapper.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import AppKit
@@ -78,7 +78,6 @@ extension ChordProEditor {
         }
 
         func setupScrollViewConstraints() {
-            scrollView.translatesAutoresizingMaskIntoConstraints = false
 
             lineNumbers.scrollView = scrollView
             lineNumbers.orientation = .verticalRuler

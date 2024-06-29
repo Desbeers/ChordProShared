@@ -1,30 +1,39 @@
 //
-//  MacEditorView.swift
-//  Chord Provider
+//  ChordProEditor.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import SwiftUI
 
-/// SwiftUI `NSViewRepresentable` for the ChordPro editor
+/// SwiftUI `NSViewRepresentable` for the **ChordPro** editor
 public struct ChordProEditor: NSViewRepresentable {
-
+    /// The `Binding` to the text of the document
     @Binding var text: String
-
+    /// The ``Settings`` for the editor
     let settings: Settings
-
+    /// All the directives we know about
     let directives: [ChordProDirective]
-
+    /// The 'introspect' callback with the editor``Internals``
     private(set) var introspect: IntrospectCallback?
 
+    /// Init the **ChordPro** editor
+    /// - Parameters:
+    ///   - text: The `Binding` to the text of the document
+    ///   - settings: The ``Settings`` for the editor
+    ///   - directives: All the directives we know about
+    ///
+    /// - Note: While `text`is a 'Binding', it does not goes two-ways. The text will be set by the init and any further updates to the text will be ignored.
+    ///         This is on purpose, because the update form the editor to the `text 'Binding' will be debounced to a maximum of once per second.
+    ///         Updates to the text have to be done trough the ``TextView``.
     public init(text: Binding<String>, settings: Settings, directives: [ChordProDirective]) {
         self._text = text
         self.settings = settings
         self.directives = directives
     }
 
-    /// Make a `coordinator` for the ``SWIFTViewRepresentable``
+    /// Make a `coordinator` for the `NSViewRepresentable`
     /// - Returns: A `coordinator`
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -57,7 +66,6 @@ public struct ChordProEditor: NSViewRepresentable {
         ChordProEditor.highlight(
             view: textView,
             settings: settings,
-            font: settings.font,
             range: range ?? NSRange(location: 0, length: text.utf16.count),
             directives: directives
         )
@@ -66,24 +74,23 @@ public struct ChordProEditor: NSViewRepresentable {
 
 extension ChordProEditor {
 
+    public func introspect(callback: @escaping IntrospectCallback) -> Self {
+        var editor = self
+        editor.introspect = callback
+        return editor
+    }
+
     @MainActor func runIntrospect(_ view: TextView) {
         guard let introspect = introspect else { return }
         let internals = Internals(
             directive: view.currentDirective,
             directiveArgument: view.currentDirectiveArgument,
             directiveRange: view.currentDirectiveRange,
-            clickedFragment: view.clickedFragment,
+            clickedDirective: view.clickedDirective,
             selectedRange: view.selectedRange(),
             textView: view
         )
         introspect(internals)
-    }
-
-
-    public func introspect(callback: @escaping IntrospectCallback) -> Self {
-        var editor = self
-        editor.introspect = callback
-        return editor
     }
 }
 

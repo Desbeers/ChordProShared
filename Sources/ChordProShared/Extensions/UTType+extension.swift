@@ -8,7 +8,7 @@
 import Foundation
 import UniformTypeIdentifiers
 
-extension UTType {
+public extension UTType {
 
     // MARK: The `UTType` for a `ChordPro` document
 

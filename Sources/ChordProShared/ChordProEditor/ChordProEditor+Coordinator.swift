@@ -1,8 +1,8 @@
 //
-//  MacEditorView+Coordinator.swift
-//  Chord Provider
+//  ChordProEditor+Coordinator.swift
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 27/06/2024.
 //
 
 import SwiftUI
