@@ -12,7 +12,7 @@ extension ChordProEditor {
     // MARK: Static settings for the editor
 
     /// The line height multiplier for the editor text
-    static let lineHeightMultiple: Double = 1.2
+    static let lineHeightMultiple: Double = 1.1
 
     /// The style of a paragraph in the editor
     static let paragraphStyle: NSParagraphStyle = {

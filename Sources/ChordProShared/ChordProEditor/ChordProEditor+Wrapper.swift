@@ -82,7 +82,7 @@ extension ChordProEditor {
             lineNumbers.scrollView = scrollView
             lineNumbers.orientation = .verticalRuler
             lineNumbers.clientView = textView
-            lineNumbers.ruleThickness = 40
+            //lineNumbers.ruleThickness = 40
 
             scrollView.verticalRulerView = lineNumbers
             scrollView.documentView = textView

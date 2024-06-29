@@ -67,7 +67,7 @@ extension ChordProEditor {
             }
 
             let font = NSFont.monospacedSystemFont(ofSize: textView.font?.pointSize ?? NSFont.systemFontSize, weight: .ultraLight)
-
+            ruleThickness = font.pointSize * 3
             let relativePoint = self.convert(NSPoint.zero, from: textView)
 
             let selectedTextLayoutFragment = textView.currentFragment
@@ -87,8 +87,20 @@ extension ChordProEditor {
             var number = 1
             var lineRect = CGRect()
             for paragraph in paragraphs {
+//                var height = paragraph.layoutFragmentFrame.height
+//                if paragraph == paragraphs.last, paragraph.textLineFragments.last?.characterRange.length == 0 {
+//                    dump(paragraph.textLineFragments.last?.characterRange)
+//
+//                    height = height / 2
+//                }
+
+
+
+                //height = paragraph == paragraphs.last ? height / 2 : height
+
                 lineRect = paragraph.layoutFragmentFrame
                 lineRect.size.width = rect.width
+                //lineRect.size.height = height
                 lineRect.origin.x = 0
                 lineRect.origin.y += relativePoint.y
 
@@ -115,7 +127,7 @@ extension ChordProEditor {
                     attributes[NSAttributedString.Key.foregroundColor] = NSColor.secondaryLabelColor
                 }
 
-                lineRect.origin.x = 5
+                lineRect.origin.x = 10
 
                 if let directive {
                     let imageAttachment = NSTextAttachment()
@@ -123,12 +135,14 @@ extension ChordProEditor {
                     imageConfiguration = imageConfiguration.applying(.init(paletteColors: [.secondaryLabelColor, .secondaryLabelColor]))
                     imageAttachment.image = NSImage(systemName: directive.icon).withSymbolConfiguration(imageConfiguration)
                     let  imageString = NSMutableAttributedString(attachment: imageAttachment)
-                    let offset = (font.pointSize * 1.4) - font.pointSize
+                    //let offset = (font.pointSize * 1.4) - font.pointSize
+                    //let offset = lineRect.height - (font.pointSize * ChordProEditor.lineHeightMultiple)
+                    let offset = (font.pointSize * ChordProEditor.lineHeightMultiple) * 0.3
                     lineRect.origin.y += offset
                     imageString.draw(in: lineRect)
                     lineRect.origin.y -= offset
                 }
-                lineRect.size.width -= 10
+                lineRect.size.width -= 15
                 NSString(string: "\(number)").draw(in: lineRect, withAttributes: attributes)
                 number += 1
             }

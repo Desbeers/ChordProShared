@@ -40,6 +40,7 @@ extension ChordProEditor {
         /// - Parameter dirtyRect: The current rect of the editor
         override public func draw(_ dirtyRect: CGRect) {
             guard let context = NSGraphicsContext.current?.cgContext else { return }
+
             if let fragment = currentFragment {
                 let lineRect = CGRect(
                     x: 0,
