@@ -22,7 +22,6 @@ extension ChordProEditor {
         ///   - orientation: The orientation of the `NSRulerView`
         required override public init(scrollView: NSScrollView?, orientation: NSRulerView.Orientation) {
             super.init(scrollView: scrollView, orientation: orientation)
-            clipsToBounds = true
         }
 
         /// Init the `NSRulerView`
@@ -70,6 +69,10 @@ extension ChordProEditor {
             ruleThickness = font.pointSize * 3
             let relativePoint = self.convert(NSPoint.zero, from: textView)
 
+            let visibleTextViewHeight = textView.visibleRect.height
+
+            //dump(textView.visibleRect)
+
             let selectedTextLayoutFragment = textView.currentFragment
 
             var paragraphs: [NSTextLayoutFragment] = []
@@ -87,64 +90,62 @@ extension ChordProEditor {
             var number = 1
             var lineRect = CGRect()
             for paragraph in paragraphs {
-//                var height = paragraph.layoutFragmentFrame.height
-//                if paragraph == paragraphs.last, paragraph.textLineFragments.last?.characterRange.length == 0 {
-//                    dump(paragraph.textLineFragments.last?.characterRange)
-//
-//                    height = height / 2
-//                }
 
 
 
-                //height = paragraph == paragraphs.last ? height / 2 : height
 
-                lineRect = paragraph.layoutFragmentFrame
-                lineRect.size.width = rect.width
-                //lineRect.size.height = height
-                lineRect.origin.x = 0
-                lineRect.origin.y += relativePoint.y
 
-                guard
-                    let content = textView.textLayoutManager?.textContentManager,
-                    let nsRange = NSRange(textRange: paragraph.rangeInElement, in: content)
-                else {
-                    print("error")
-                    return
-                }
-                var directive: ChordProDirective?
 
-                textView.textStorage?.enumerateAttribute(.directive, in: nsRange) {value, _, _ in
-                    if let value = value as? String, let match = textView.directives.first(where: { $0.directive == value }) {
-                        directive = match
+                    lineRect = paragraph.layoutFragmentFrame
+                    lineRect.size.width = rect.width
+                    lineRect.origin.x = 0
+                    lineRect.origin.y += relativePoint.y
+                if lineRect.maxY < visibleTextViewHeight {
+
+                    dump(lineRect.maxY)
+                    dump(visibleTextViewHeight)
+
+                    guard
+                        let content = textView.textLayoutManager?.textContentManager,
+                        let nsRange = NSRange(textRange: paragraph.rangeInElement, in: content)
+                    else {
+                        print("error")
+                        return
                     }
+                    var directive: ChordProDirective?
+
+                    textView.textStorage?.enumerateAttribute(.directive, in: nsRange) {value, _, _ in
+                        if let value = value as? String, let match = textView.directives.first(where: { $0.directive == value }) {
+                            directive = match
+                        }
+                    }
+
+                    if paragraph.layoutFragmentFrame == selectedTextLayoutFragment?.layoutFragmentFrame {
+                        context.setFillColor(ChordProEditor.highlightedForegroundColor.cgColor)
+                        context.fill(lineRect)
+                        attributes[NSAttributedString.Key.foregroundColor] = NSColor.textColor
+                    } else {
+                        attributes[NSAttributedString.Key.foregroundColor] = NSColor.secondaryLabelColor
+                    }
+
+                    lineRect.origin.x = 10
+
+                    if let directive {
+                        let imageAttachment = NSTextAttachment()
+                        let imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.8, weight: .light)
+                        imageAttachment.image = NSImage(systemName: directive.icon).withSymbolConfiguration(imageConfiguration)
+                        let  imageString = NSMutableAttributedString(attachment: imageAttachment)
+                        let offset = (font.pointSize * ChordProEditor.lineHeightMultiple) * 0.3
+                        lineRect.origin.y += offset
+                        imageString.draw(in: lineRect)
+                        lineRect.origin.y -= offset
+                    }
+                    lineRect.size.width -= 15
+                    NSString(string: "\(number)").draw(in: lineRect, withAttributes: attributes)
+                    number += 1
+
                 }
 
-                if paragraph.layoutFragmentFrame == selectedTextLayoutFragment?.layoutFragmentFrame {
-                    context.setFillColor(ChordProEditor.highlightedForegroundColor.cgColor)
-                    context.fill(lineRect)
-                    attributes[NSAttributedString.Key.foregroundColor] = NSColor.textColor
-                } else {
-                    attributes[NSAttributedString.Key.foregroundColor] = NSColor.secondaryLabelColor
-                }
-
-                lineRect.origin.x = 10
-
-                if let directive {
-                    let imageAttachment = NSTextAttachment()
-                    var imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.8, weight: .light)
-                    imageConfiguration = imageConfiguration.applying(.init(paletteColors: [.secondaryLabelColor, .secondaryLabelColor]))
-                    imageAttachment.image = NSImage(systemName: directive.icon).withSymbolConfiguration(imageConfiguration)
-                    let  imageString = NSMutableAttributedString(attachment: imageAttachment)
-                    //let offset = (font.pointSize * 1.4) - font.pointSize
-                    //let offset = lineRect.height - (font.pointSize * ChordProEditor.lineHeightMultiple)
-                    let offset = (font.pointSize * ChordProEditor.lineHeightMultiple) * 0.3
-                    lineRect.origin.y += offset
-                    imageString.draw(in: lineRect)
-                    lineRect.origin.y -= offset
-                }
-                lineRect.size.width -= 15
-                NSString(string: "\(number)").draw(in: lineRect, withAttributes: attributes)
-                number += 1
             }
         }
     }
