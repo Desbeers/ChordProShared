@@ -66,6 +66,9 @@ extension ChordProEditor {
             }
 
             let font = NSFont.monospacedSystemFont(ofSize: textView.font?.pointSize ?? NSFont.systemFontSize, weight: .ultraLight)
+
+            let lineHeight = ChordProEditor.totalLineHeight(fontSize: font.pointSize)
+
             ruleThickness = font.pointSize * 3
             let relativePoint = self.convert(NSPoint.zero, from: textView)
 
@@ -117,23 +120,27 @@ extension ChordProEditor {
                 } else {
                     attributes[NSAttributedString.Key.foregroundColor] = NSColor.secondaryLabelColor
                 }
-                /// Resize the rect for symbols and numbers
-                lineRect.origin.x = 10
-                lineRect.size.width -= 15
                 /// Draw a symbol if we have a known directive
                 if let directive {
+//                    let color = NSColor(textView.parent?.settings.directiveColor ?? .secondary)
+                    //let color = NSColor(.accentColor)
+                    var iconRect = lineRect
                     let imageAttachment = NSTextAttachment()
-                    let imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.7, weight: .light)
+                    let imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.7, weight: .medium)
                     imageAttachment.image = NSImage(systemName: directive.icon).withSymbolConfiguration(imageConfiguration)
-                    let  imageString = NSMutableAttributedString(attachment: imageAttachment)
-                    let offset = (ChordProEditor.totalLineHeight(fontSize: font.pointSize) - 10) / 2.6
-                    lineRect.origin.y += offset
-                    imageString.draw(in: lineRect)
-                    lineRect.origin.y -= offset
+                    let imageString = NSMutableAttributedString(attachment: imageAttachment)
+                    imageString.addAttributes([.foregroundColor: NSColor.secondaryLabelColor], range: NSRange(location: 0, length: imageString.length))
+                    let imageSize = imageString.size()
+                    let offset = lineHeight - (imageSize.height * 0.9)
+                    iconRect.origin.x += iconRect.width - (imageSize.width * 1.2)
+                    iconRect.origin.y += offset / 2
+                    imageString.draw(in: iconRect)
                 }
                 /// Draw the line number
-                NSString(string: "\(number)").draw(in: lineRect, withAttributes: attributes)
-                /// Add one more line number for the next pareagraph
+                var numberRect = lineRect
+                numberRect.size.width -= lineHeight
+                NSString(string: "\(number)").draw(in: numberRect, withAttributes: attributes)
+                /// Add one more line number for the next paragraph
                 number += 1
             }
         }
