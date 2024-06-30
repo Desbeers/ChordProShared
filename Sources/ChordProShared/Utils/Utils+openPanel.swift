@@ -7,34 +7,33 @@
 
 import AppKit
 import UniformTypeIdentifiers
+import OSLog
 
 extension Utils {
 
-    @MainActor public static func openPanel<T: UserFile>(bookmark: T, action: @escaping () -> Void) async throws -> URL {
+    @MainActor public static func openPanel<T: UserFile>(userFile: T, action: @escaping () -> Void) throws {
         /// Make sure we have a window to attach the sheet
         guard let window = NSApp.keyWindow else {
             throw AppError.noKeyWindow
         }
-        let selection = try UserFileBookmark.getBookmarkURL(bookmark)
-        let dialog = NSOpenPanel()
-        dialog.showsResizeIndicator = true
-        dialog.showsHiddenFiles = false
-        dialog.canChooseDirectories = bookmark.utTypes.contains(UTType.folder) ? true : false
-        dialog.allowedContentTypes = bookmark.utTypes
-        dialog.directoryURL = selection
-        dialog.message = bookmark.message
-        dialog.prompt = "Select"
-        dialog.canCreateDirectories = false
-        let result = await dialog.beginSheetModal(for: window)
-        /// Throw an error if no file is selected
-        guard  result == .OK, let url = dialog.url else {
-            throw AppError.noFolderSelected
+        let selection = try UserFileBookmark.getBookmarkURL(userFile)
+        let panel = NSOpenPanel()
+        panel.showsResizeIndicator = true
+        panel.showsHiddenFiles = false
+        panel.canChooseDirectories = userFile.utTypes.contains(UTType.folder) ? true : false
+        panel.allowedContentTypes = userFile.utTypes
+        panel.directoryURL = selection
+        panel.message = userFile.message
+        panel.prompt = "Select"
+        panel.canCreateDirectories = false
+        /// Open the panel in a sheet
+        panel.beginSheetModal(for: window) { result in
+            guard  result == .OK, let url = panel.url else {
+                return
+            }
+            UserFileBookmark.setBookmarkURL(userFile, url)
+            Logger.application.info("Bookmark set for '\(url.lastPathComponent, privacy: .public)'")
+            action()
         }
-        /// Create a persistent bookmark for the file the user just selected
-        UserFileBookmark.setBookmarkURL(bookmark, url)
-        action()
-        /// Return the selected url
-        return url
     }
-
 }

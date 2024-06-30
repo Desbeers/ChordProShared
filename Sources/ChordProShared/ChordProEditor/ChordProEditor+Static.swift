@@ -22,7 +22,12 @@ extension ChordProEditor {
     }()
 
     static func baselineOffset(fontSize: Double) -> Double {
-        return ((fontSize * ChordProEditor.lineHeightMultiple) - fontSize) * 3
+        return ((fontSize * ChordProEditor.lineHeightMultiple) - fontSize) * 4
+    }
+
+    static func totalLineHeight(fontSize: CGFloat? = nil) -> Double {
+        let fontSize = fontSize ?? 14
+        return (fontSize * ChordProEditor.lineHeightMultiple) + ChordProEditor.baselineOffset(fontSize: fontSize)
     }
 
     /// The style of a number in the ruler

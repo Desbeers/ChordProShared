@@ -90,6 +90,11 @@ extension ChordProEditor {
                 lineRect.size.width = rect.width
                 lineRect.origin.x = 0
                 lineRect.origin.y += relativePoint.y
+
+                if paragraph == paragraphs.last {
+                    lineRect.size.height -= textView.lastFragmentReduce
+                }
+
                 guard
                     let content = textView.textLayoutManager?.textContentManager,
                     let nsRange = NSRange(textRange: paragraph.rangeInElement, in: content)
@@ -112,21 +117,23 @@ extension ChordProEditor {
                 } else {
                     attributes[NSAttributedString.Key.foregroundColor] = NSColor.secondaryLabelColor
                 }
-
+                /// Resize the rect for symbols and numbers
                 lineRect.origin.x = 10
-
+                lineRect.size.width -= 15
+                /// Draw a symbol if we have a known directive
                 if let directive {
                     let imageAttachment = NSTextAttachment()
-                    let imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.8, weight: .light)
+                    let imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.7, weight: .light)
                     imageAttachment.image = NSImage(systemName: directive.icon).withSymbolConfiguration(imageConfiguration)
                     let  imageString = NSMutableAttributedString(attachment: imageAttachment)
-                    let offset = (font.pointSize * ChordProEditor.lineHeightMultiple) * 0.3
+                    let offset = (ChordProEditor.totalLineHeight(fontSize: font.pointSize) - 10) / 2.6
                     lineRect.origin.y += offset
                     imageString.draw(in: lineRect)
                     lineRect.origin.y -= offset
                 }
-                lineRect.size.width -= 15
+                /// Draw the line number
                 NSString(string: "\(number)").draw(in: lineRect, withAttributes: attributes)
+                /// Add one more line number for the next pareagraph
                 number += 1
             }
         }

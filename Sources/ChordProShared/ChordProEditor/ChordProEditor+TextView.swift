@@ -20,7 +20,6 @@ extension ChordProEditor {
         /// The parent
         var parent: ChordProEditor?
 
-
         var directives: [ChordProDirective] = []
 
         var currentDirective: ChordProDirective?
@@ -30,6 +29,8 @@ extension ChordProEditor {
 
         /// The current fragment of the cursor
         var currentFragment: NSTextLayoutFragment?
+
+        var lastFragmentReduce: Double = 0
 
         /// The optional double-clicked directive in the editor
         var clickedDirective: Bool = false
@@ -46,7 +47,7 @@ extension ChordProEditor {
                     x: 0,
                     y: fragment.layoutFragmentFrame.origin.y,
                     width: bounds.width,
-                    height: fragment.layoutFragmentFrame.height
+                    height: fragment.layoutFragmentFrame.height - lastFragmentReduce
                 )
                 context.setFillColor(ChordProEditor.highlightedForegroundColor.cgColor)
                 context.fill(lineRect)
@@ -77,6 +78,8 @@ extension ChordProEditor {
         /// Set the fragment information
         /// - Parameter selectedRange: The current selected range of the text editor
         func setFragmentInformation(selectedRange: NSRange) {
+            lastFragmentReduce = 0
+
             guard let textStorage = textStorage
             else { return }
             var selectedRange = selectedRange
@@ -87,13 +90,23 @@ extension ChordProEditor {
                 let textContentManager = textLayoutManager.textContentManager,
                 let range = NSTextRange(range: selectedRange, in: textContentManager),
                 let fragment = textLayoutManager.textLayoutFragment(for: range.location),
-                let nsRange = NSRange(textRange: fragment.rangeInElement, in: textContentManager)
+                let nsRange = NSRange(textRange: fragment.rangeInElement, in: textContentManager),
+                let lastRange = NSTextRange(range: NSRange(location: string.count - 1, length: 0), in: textContentManager),
+                let lastParagraph = textLayoutManager.textLayoutFragment(for: lastRange.location)
             else {
                 currentFragment = nil
                 currentDirective = nil
                 currentDirectiveArgument = ""
                 currentDirectiveRange = nil
                 return
+            }
+
+            if
+                fragment == lastParagraph,
+                let swiftRange = Range(NSRange(location: string.count - 1, length: 1), in: string),
+                string[swiftRange] == "\n"
+            {
+                lastFragmentReduce = ChordProEditor.totalLineHeight(fontSize: font?.pointSize)
             }
             /// Find the optional directive of the fragment
             var directive: ChordProDirective?
@@ -109,8 +122,9 @@ extension ChordProEditor {
                     directiveArgument = value
                 }
             }
-
+            /// Get the range of the directive for optional editing
             var directiveRange: NSRange?
+
             if currentDirective != nil {
                 textStorage.enumerateAttribute(.directiveRange, in: nsRange) {values, _, _ in
                     if let value = values as? NSRange {

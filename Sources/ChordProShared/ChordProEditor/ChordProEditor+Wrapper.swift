@@ -39,8 +39,8 @@ extension ChordProEditor {
             scrollView.borderType = .noBorder
             scrollView.hasVerticalScroller = true
             scrollView.hasHorizontalRuler = false
-            scrollView.hasVerticalRuler = true
-            scrollView.rulersVisible = true
+//            scrollView.hasVerticalRuler = true
+//            scrollView.rulersVisible = true
             scrollView.autoresizingMask = [.width, .height]
             scrollView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -95,13 +95,16 @@ extension ChordProEditor {
         }
 
         func setupScrollViewConstraints() {
-
             lineNumbers.scrollView = scrollView
             lineNumbers.orientation = .verticalRuler
             lineNumbers.clientView = textView
             lineNumbers.ruleThickness = 40
 
+            scrollView.hasVerticalRuler = true
+            scrollView.rulersVisible = true
+
             scrollView.verticalRulerView = lineNumbers
+
             scrollView.documentView = textView
 
             addSubview(scrollView)
