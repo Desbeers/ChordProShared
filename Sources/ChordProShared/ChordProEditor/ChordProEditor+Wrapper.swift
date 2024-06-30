@@ -37,8 +37,8 @@ extension ChordProEditor {
             scrollView.borderType = .noBorder
             scrollView.hasVerticalScroller = true
             scrollView.hasHorizontalRuler = false
-            scrollView.hasVerticalRuler      = true
-            scrollView.rulersVisible         = true
+            scrollView.hasVerticalRuler = true
+            scrollView.rulersVisible = true
             scrollView.autoresizingMask = [.width, .height]
             scrollView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -73,14 +73,14 @@ extension ChordProEditor {
             textView.isAutomaticQuoteSubstitutionEnabled = false
             textView.chordProEditorDelegate = self
             textView.allowsUndo = true
-            textView.textContainerInset = .init(width: 4, height: 0)
+            textView.textContainerInset = .init(width: 2, height: 0)
             textView.drawsBackground = false
-
             return textView
         }()
 
         /// The `NSRulerView`
-        lazy private var lineNumbers: LineNumbersView = {
+        //lazy private var lineNumbers = NSRulerView()
+        lazy var lineNumbers: LineNumbersView = {
             let lineNumbersView = LineNumbersView()
             return lineNumbersView
         }()
