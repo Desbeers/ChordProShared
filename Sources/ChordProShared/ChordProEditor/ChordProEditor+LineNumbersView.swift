@@ -30,15 +30,6 @@ extension ChordProEditor {
             fatalError("init(coder:) has not been implemented")
         }
 
-        override public var clipsToBounds: Bool {
-            get {
-              return true
-            }
-            set {
-                //clipsToBounds = newValue
-            }
-          }
-
         // MARK: Override functions
 
         /// Draw a background a a stroke on the right of the `NSRulerView`
@@ -73,6 +64,7 @@ extension ChordProEditor {
             else {
                 return
             }
+
             let font = NSFont.monospacedSystemFont(ofSize: textView.font?.pointSize ?? NSFont.systemFontSize, weight: .ultraLight)
             ruleThickness = font.pointSize * 3
             let relativePoint = self.convert(NSPoint.zero, from: textView)
@@ -136,7 +128,6 @@ extension ChordProEditor {
                 lineRect.size.width -= 15
                 NSString(string: "\(number)").draw(in: lineRect, withAttributes: attributes)
                 number += 1
-
             }
         }
     }
