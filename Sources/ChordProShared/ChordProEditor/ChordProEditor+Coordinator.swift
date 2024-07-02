@@ -30,6 +30,46 @@ public extension ChordProEditor {
 
         // MARK: Protocol Functions
 
+        public func textView(_ view: NSTextView, menu: NSMenu, for event: NSEvent, at charIndex: Int) -> NSMenu? {
+            /// Disable context-menu, it is full with useless rubbish...
+            return nil
+
+            /// Experimental code to add **ChordPro** directives to the context-menu
+
+//            guard let textView = view as? TextView else {
+//                return menu
+//            }
+//            let newMenu = NSMenu()
+//            newMenu.allowsContextMenuPlugIns = false
+//            newMenu.autoenablesItems = false
+//            newMenu.addItem(withTitle: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "")
+//            newMenu.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "")
+//            newMenu.addItem(withTitle: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "")
+//            newMenu.addItem(withTitle: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "")
+//            newMenu.addItem(.separator())
+//            let menuItem = newMenu.addItem(withTitle: "Metadata", action: nil, keyEquivalent: "")
+//            menuItem.isEnabled = textView.currentDirective == nil ? true : false
+//            let subMenu = NSMenu()
+//            menuItem.submenu = subMenu
+//            for directive in parent.directives {
+//                let item = subMenu.addItem(withTitle: directive.directive, action: #selector(self.didSelectClickMe(_:)), keyEquivalent: "")
+//                item.representedObject = directive
+//                item.target = self
+//            }
+//            return newMenu
+        }
+
+        @objc func didSelectClickMe(_ sender: NSMenuItem) {
+            guard 
+                let directive = sender.representedObject as? ChordProDirective,
+                let textView = parent.textView
+            else {
+                return
+            }
+            print("Directive: \(directive.directive)")
+            textView.insertText(directive.directive, replacementRange: textView.selectedRange())
+        }
+
         /// Protocol function to check if a text should change
         /// - Parameters:
         ///   - textView: The `NSTextView`

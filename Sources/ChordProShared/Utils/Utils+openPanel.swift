@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Utils+openPanel.swift
+//  ChordProShared
 //
 //  Created by Nick Berendsen on 28/06/2024.
 //
@@ -11,24 +11,33 @@ import OSLog
 
 extension Utils {
 
-    @MainActor public static func openPanel<T: UserFile>(userFile: T, action: @escaping () -> Void) throws {
+    /// Show an `AppKit` `NSOpenPanel`
+    ///
+    /// I don't use the `SwiftUI` `.fileImporter` here because it is too limited;
+    /// especially on macOS versions lower than 14.
+    /// So, I just call a good o'l NSOpenPanel here.`
+    ///
+    /// - Parameters:
+    ///   - userFile: The ``UserFile`` to open
+    ///   - action: The action when a file is selected
+    public static func openPanel<T: UserFile>(userFile: T, action: @escaping () -> Void) throws {
         /// Make sure we have a window to attach the sheet
         guard let window = NSApp.keyWindow else {
             throw AppError.noKeyWindow
         }
-        let selection = try UserFileBookmark.getBookmarkURL(userFile)
-        let panel = NSOpenPanel()
-        panel.showsResizeIndicator = true
-        panel.showsHiddenFiles = false
-        panel.canChooseDirectories = userFile.utTypes.contains(UTType.folder) ? true : false
-        panel.allowedContentTypes = userFile.utTypes
-        panel.directoryURL = selection
-        panel.message = userFile.message
-        panel.prompt = "Select"
-        panel.canCreateDirectories = false
+        let lastSelectedURL = try UserFileBookmark.getBookmarkURL(userFile)
+        let openPanel = NSOpenPanel()
+        openPanel.showsResizeIndicator = true
+        openPanel.showsHiddenFiles = false
+        openPanel.canChooseDirectories = userFile.utTypes.contains(UTType.folder) ? true : false
+        openPanel.allowedContentTypes = userFile.utTypes
+        openPanel.directoryURL = lastSelectedURL
+        openPanel.message = userFile.message
+        openPanel.prompt = "Select"
+        openPanel.canCreateDirectories = false
         /// Open the panel in a sheet
-        panel.beginSheetModal(for: window) { result in
-            guard  result == .OK, let url = panel.url else {
+        openPanel.beginSheetModal(for: window) { result in
+            guard  result == .OK, let url = openPanel.url else {
                 return
             }
             UserFileBookmark.setBookmarkURL(userFile, url)

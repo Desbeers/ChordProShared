@@ -1,8 +1,8 @@
 //
 //  ColorPickerButtonView.swift
-//  Chord Provider
+//  ChordProShared
 //
-//  © 2024 Nick Berendsen
+//  Created by Nick Berendsen on 26/06/2024.
 //
 
 import SwiftUI

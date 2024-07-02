@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Utils+printDialog.swift
+//  ChordProShared
 //
 //  Created by Nick Berendsen on 28/06/2024.
 //
@@ -10,9 +10,9 @@ import PDFKit
 
 extension Utils {
 
-    /// Show a Print Dialog for the current PDF
+    /// Show a `AppKit` *Print Dialog* for the current PDF
     /// - Parameter exportURL: The URL of the export PDF
-    @MainActor public static func printDialog(exportURL: URL) {
+    public static func printDialog(exportURL: URL) {
         if let window = NSApp.keyWindow {
             /// Set the print info
             let printInfo = NSPrintInfo()
