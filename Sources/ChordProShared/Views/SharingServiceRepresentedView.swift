@@ -1,27 +1,27 @@
 //
-//  SharingPickerView.swift
-//
+//  SharingServiceRepresentedView.swift
+//  ChordProShared
 //
 //  Created by Nick Berendsen on 01/07/2024.
 //
 
 import SwiftUI
 
-public struct SharingPickerView: NSViewRepresentable {
-
+/// SwiftUI `NSViewRepresentable` for a Sharing Service Picker
+public struct SharingServiceRepresentedView: NSViewRepresentable {
+    @Binding var isPresented: Bool
+    let url: URL
+    /// Init the `View`
     public init(isPresented: Binding<Bool>, url: URL) {
         self._isPresented = isPresented
         self.url = url
     }
-
-    @Binding var isPresented: Bool
-    let url: URL
-
+    /// Make the `View`
     public func makeNSView(context: Context) -> NSView {
         let view = NSView()
         return view
     }
-
+    /// Update the `View`
     public func updateNSView(_ nsView: NSView, context: Context) {
         if isPresented {
             let picker = NSSharingServicePicker(items: [url])
@@ -33,19 +33,22 @@ public struct SharingPickerView: NSViewRepresentable {
             }
         }
     }
-
+    /// Make a `coordinator` for the `NSViewRepresentable`
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    /// The coordinator for the ``SharingServiceRepresentedView``
     public class Coordinator: NSObject, NSSharingServicePickerDelegate {
-
-        let parent: SharingPickerView
-
-        init(_ parent: SharingPickerView) {
+        /// The parent
+        let parent: SharingServiceRepresentedView
+        /// Init the **coordinator**
+        init(_ parent: SharingServiceRepresentedView) {
             self.parent = parent
         }
+        
+        // MARK: Protocol Stuff
 
+        /// Asks your delegate to provide an object that the selected sharing service can use as its delegate
         public func sharingServicePicker(
             _ sharingServicePicker: NSSharingServicePicker,
             sharingServicesForItems items: [Any],
@@ -60,15 +63,10 @@ public struct SharingPickerView: NSViewRepresentable {
             share.insert(printService, at: 0)
             return share
         }
-
+        /// Tells the delegate that the person selected a sharing service for the current item
         public func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker, didChoose service: NSSharingService?) {
-           sharingServicePicker.delegate = nil   // << cleanup
+            /// Cleanup
+           sharingServicePicker.delegate = nil
         }
-
-        func setClipboard(text: String) {
-                let clipboard = NSPasteboard.general
-                clipboard.clearContents()
-                clipboard.setString(text, forType: .string)
-            }
     }
 }
