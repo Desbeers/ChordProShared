@@ -39,8 +39,8 @@ extension ChordProEditor {
             scrollView.borderType = .noBorder
             scrollView.hasVerticalScroller = true
             scrollView.hasHorizontalRuler = false
-//            scrollView.hasVerticalRuler = true
-//            scrollView.rulersVisible = true
+            scrollView.hasVerticalRuler = true
+            scrollView.rulersVisible = true
             scrollView.autoresizingMask = [.width, .height]
             scrollView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -51,6 +51,8 @@ extension ChordProEditor {
             let contentSize = scrollView.contentSize
             let textContentStorage = NSTextContentStorage()
             let textLayoutManager = NSTextLayoutManager()
+            /// Need below to prevent random jumping of the scrollbar
+            textLayoutManager.textSelectionNavigation.allowsNonContiguousRanges = false
             textContentStorage.addTextLayoutManager(textLayoutManager)
             let textContainer = NSTextContainer(containerSize: scrollView.frame.size)
             textContainer.widthTracksTextView = true
@@ -99,9 +101,9 @@ extension ChordProEditor {
             lineNumbers.orientation = .verticalRuler
             lineNumbers.clientView = textView
             lineNumbers.ruleThickness = 40
-
-            scrollView.hasVerticalRuler = true
-            scrollView.rulersVisible = true
+//
+//            scrollView.hasVerticalRuler = true
+//            scrollView.rulersVisible = true
 
             scrollView.verticalRulerView = lineNumbers
 

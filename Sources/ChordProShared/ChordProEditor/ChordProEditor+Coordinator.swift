@@ -59,16 +59,16 @@ public extension ChordProEditor {
 //            return newMenu
         }
 
-        @objc func didSelectClickMe(_ sender: NSMenuItem) {
-            guard 
-                let directive = sender.representedObject as? ChordProDirective,
-                let textView = parent.textView
-            else {
-                return
-            }
-            print("Directive: \(directive.directive)")
-            textView.insertText(directive.directive, replacementRange: textView.selectedRange())
-        }
+//        @objc func didSelectClickMe(_ sender: NSMenuItem) {
+//            guard 
+//                let directive = sender.representedObject as? ChordProDirective,
+//                let textView = parent.textView
+//            else {
+//                return
+//            }
+//            print("Directive: \(directive.directive)")
+//            textView.insertText(directive.directive, replacementRange: textView.selectedRange())
+//        }
 
         /// Protocol function to check if a text should change
         /// - Parameters:

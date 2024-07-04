@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PDFKit
+import Quartz
 
 /// SwiftUI `NSViewRepresentable` for a PDF View
 public struct PDFKitRepresentedView: NSViewRepresentable {
@@ -15,6 +16,7 @@ public struct PDFKitRepresentedView: NSViewRepresentable {
     /// Init the `View`
     /// - Parameter data: The data of the PDF
     public init(data: Data) {
+        print("INIT PDF")
         self.data = data
     }
     /// Make the `View`
@@ -31,7 +33,17 @@ public struct PDFKitRepresentedView: NSViewRepresentable {
     /// - Parameters:
     ///   - pdfView: The PDFView
     ///   - context: The context
-    public func updateNSView(_ pdfView: NSViewType, context: NSViewRepresentableContext<PDFKitRepresentedView>) {
+    public func updateNSView(_ pdfView: PDFView, context: NSViewRepresentableContext<PDFKitRepresentedView>) {
+        print("updateNSView PDF")
+        
+        let newData = PDFDocument(data: data)
+
+        if newData?.string != pdfView.document?.string {
+            print("TEXT CHANGED")
+        }
+        
+        /// Animate the transition
+        pdfView.animator().isHidden = true
         /// Make sure we have a document with a page
         guard
             let currentDestination = pdfView.currentDestination,
@@ -54,6 +66,7 @@ public struct PDFKitRepresentedView: NSViewRepresentable {
             restoredDestination.zoom = position.zoom
             pdfView.go(to: restoredDestination)
         }
+        pdfView.animator().isHidden = false
     }
 }
 
@@ -66,5 +79,31 @@ extension PDFKitRepresentedView {
         let zoom: CGFloat
         /// The location on the page
         let location: NSPoint
+    }
+}
+
+/// Show a PDF preview of the current document
+/// - Note: I don't use the SwiftUI ` .quickLookPreview($url)` here because that seems to conflict with a `NSTextView` in a `NSViewRepresentableContext.
+///         Unsaved documents cannot be previewed on macOS 14 for some unknown reason...
+public struct PreviewView: NSViewRepresentable {
+
+    public init(url: URL) {
+        self.url = url
+    }
+
+    var url: URL
+    public func makeNSView(context: NSViewRepresentableContext<PreviewView>) -> QLPreviewView {
+        let preview = QLPreviewView(frame: .zero, style: .normal)
+        preview?.autostarts = true
+        preview?.previewItem = url as QLPreviewItem
+
+        return preview ?? QLPreviewView()
+    }
+
+    public func updateNSView(_ nsView: QLPreviewView, context: NSViewRepresentableContext<PreviewView>) {
+        
+        print("update QLPreviewView")
+        
+        nsView.previewItem = url as QLPreviewItem
     }
 }

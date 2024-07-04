@@ -18,7 +18,7 @@ public struct ChordProEditor: NSViewRepresentable {
     /// The 'introspect' callback with the editor``Internals``
     private(set) var introspect: IntrospectCallback?
 
-    @State var textView: TextView?
+    //@State var textView: TextView?
 
     /// Init the **ChordPro** editor
     /// - Parameters:
@@ -49,7 +49,7 @@ public struct ChordProEditor: NSViewRepresentable {
         wrapper.textView.string = text
         /// Wait for next cycle and set the textview as first responder
         Task { @MainActor in
-            self.textView = wrapper.textView
+            //self.textView = wrapper.textView
             highlightText(textView: wrapper.textView)
             wrapper.textView.selectedRanges = [NSValue(range: NSRange())]
             wrapper.textView.window?.makeFirstResponder(wrapper.textView)

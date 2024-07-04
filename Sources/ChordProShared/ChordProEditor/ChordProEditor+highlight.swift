@@ -104,14 +104,7 @@ extension ChordProEditor {
                 }
             }
         }
-
-        /// The attributes for the next typing
-        view.typingAttributes = [
-            .paragraphStyle: ChordProEditor.paragraphStyle,
-            .foregroundColor: NSColor.textColor,
-            .font: settings.font
-        ]
-
+        
         /// Some extra love for known directives
         guard
             let knownDirectiveRegex = try? NSRegularExpression(
@@ -133,6 +126,14 @@ extension ChordProEditor {
                 )
             }
         }
+        
+        /// The attributes for the next typing
+        view.typingAttributes = [
+            .paragraphStyle: ChordProEditor.paragraphStyle,
+            .foregroundColor: NSColor.textColor,
+            .baselineOffset: ChordProEditor.baselineOffset(fontSize: settings.fontSize),
+            .font: settings.font
+        ]
     }
 }
 

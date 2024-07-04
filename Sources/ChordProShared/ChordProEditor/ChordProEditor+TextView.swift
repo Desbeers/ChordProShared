@@ -74,7 +74,7 @@ extension ChordProEditor {
             let composeText = self.string as NSString
             self.insertText(text, replacementRange: NSRange(location: 0, length: composeText.length))
         }
-
+        
         /// Set the fragment information
         /// - Parameter selectedRange: The current selected range of the text editor
         func setFragmentInformation(selectedRange: NSRange) {

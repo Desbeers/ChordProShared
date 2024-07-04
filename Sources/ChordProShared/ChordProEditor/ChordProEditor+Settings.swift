@@ -61,22 +61,16 @@ extension ChordProEditor.Settings {
             var descriptor: NSFontDescriptor?
             switch self {
             case .monospaced:
-                descriptor = NSFontDescriptor
-                    .preferredFontDescriptor(forTextStyle: .body)
-                    .withDesign(.monospaced)
+                descriptor = NSFont.systemFont(ofSize: size).fontDescriptor.addingAttributes().withDesign(.monospaced)
             case .serif:
-                descriptor = NSFontDescriptor
-                    .preferredFontDescriptor(forTextStyle: .body)
-                    .withDesign(.serif)
+                descriptor = NSFont.systemFont(ofSize: size).fontDescriptor.addingAttributes().withDesign(.serif)
             case .sansSerif:
-                descriptor = NSFontDescriptor
-                    .preferredFontDescriptor(forTextStyle: .body)
-                    .withDesign(.default)
+                descriptor = NSFont.systemFont(ofSize: size).fontDescriptor.addingAttributes().withDesign(.default)
             }
             if let descriptor, let font = NSFont(descriptor: descriptor, size: size) {
                 return font
             }
-            return NSFont.systemFont(ofSize: size)
+            return NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
         }
         /// The calculated font for the `SettingsView`
         public func font(size: Double) -> Font {
