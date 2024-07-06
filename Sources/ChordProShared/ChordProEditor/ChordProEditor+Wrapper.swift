@@ -38,6 +38,7 @@ extension ChordProEditor {
             scrollView.drawsBackground = true
             scrollView.borderType = .noBorder
             scrollView.hasVerticalScroller = true
+            scrollView.hasHorizontalScroller = false
             scrollView.hasHorizontalRuler = false
             scrollView.hasVerticalRuler = true
             scrollView.rulersVisible = true
@@ -49,18 +50,21 @@ extension ChordProEditor {
 
         lazy var textView: TextView = {
             let contentSize = scrollView.contentSize
-            let textContentStorage = NSTextContentStorage()
-            let textLayoutManager = NSTextLayoutManager()
-            /// Need below to prevent random jumping of the scrollbar
-            textLayoutManager.textSelectionNavigation.allowsNonContiguousRanges = false
-            textContentStorage.addTextLayoutManager(textLayoutManager)
+            let textStorage = NSTextStorage()
+            let layoutManager = LayoutManager()
+
+            //layoutManager.allowsNonContiguousLayout = true
+
+            textStorage.addLayoutManager(layoutManager)
+
             let textContainer = NSTextContainer(containerSize: scrollView.frame.size)
             textContainer.widthTracksTextView = true
             textContainer.containerSize = NSSize(
                 width: contentSize.width,
                 height: CGFloat.greatestFiniteMagnitude
             )
-            textLayoutManager.textContainer = textContainer
+
+            layoutManager.addTextContainer(textContainer)
 
             let textView = TextView(frame: .zero, textContainer: textContainer)
             textView.autoresizingMask = .width
@@ -75,10 +79,11 @@ extension ChordProEditor {
             textView.textColor = NSColor.labelColor
             textView.allowsUndo = true
             textView.isAutomaticQuoteSubstitutionEnabled = false
+            textView.layoutManager?.delegate = layoutManager
             textView.chordProEditorDelegate = self
-            textView.allowsUndo = true
             textView.textContainerInset = .init(width: 2, height: 0)
             textView.drawsBackground = false
+
             return textView
         }()
 
@@ -105,9 +110,9 @@ extension ChordProEditor {
 //            scrollView.hasVerticalRuler = true
 //            scrollView.rulersVisible = true
 
-            scrollView.verticalRulerView = lineNumbers
+            scrollView.translatesAutoresizingMaskIntoConstraints = false
 
-            scrollView.documentView = textView
+            scrollView.verticalRulerView = lineNumbers
 
             addSubview(scrollView)
 
@@ -122,6 +127,37 @@ extension ChordProEditor {
         func setupTextView() {
             scrollView.documentView = textView
         }
+
+//        // MARK: Layout Manager Delegate
+//
+//        // swiftlint:disable:next function_parameter_count
+//        public func layoutManager(
+//            _ layoutManager: NSLayoutManager,
+//            shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<NSRect>,
+//            lineFragmentUsedRect: UnsafeMutablePointer<NSRect>,
+//            baselineOffset: UnsafeMutablePointer<CGFloat>,
+//            in textContainer: NSTextContainer,
+//            forGlyphRange glyphRange: NSRange
+//        ) -> Bool {
+//            print("Layout Manager Delegate")
+//            let font: NSFont = textView.font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
+//
+//            let fontLineHeight = layoutManager.defaultLineHeight(for: font)
+//            let lineHeight = fontLineHeight * ChordProEditor.lineHeightMultiple
+//            let baselineNudge = (lineHeight - fontLineHeight) * 0.5
+//
+//            var rect = lineFragmentRect.pointee
+//            rect.size.height = lineHeight
+//
+//            var usedRect = lineFragmentUsedRect.pointee
+//            usedRect.size.height = max(lineHeight, usedRect.size.height) // keep emoji sizes
+//
+//            lineFragmentRect.pointee = rect
+//            lineFragmentUsedRect.pointee = usedRect
+//            baselineOffset.pointee += baselineNudge
+//
+//            return true
+//        }
 
         // MARK: MacEditorDelegate
 

@@ -65,7 +65,7 @@ extension ChordProEditor {
             [
                 .paragraphStyle: ChordProEditor.paragraphStyle,
                 .foregroundColor: NSColor.textColor,
-                .baselineOffset: ChordProEditor.baselineOffset(fontSize: settings.fontSize),
+                //.baselineOffset: ChordProEditor.baselineOffset(fontSize: settings.fontSize),
                 .font: settings.font
             ],
             range: range
@@ -131,7 +131,7 @@ extension ChordProEditor {
         view.typingAttributes = [
             .paragraphStyle: ChordProEditor.paragraphStyle,
             .foregroundColor: NSColor.textColor,
-            .baselineOffset: ChordProEditor.baselineOffset(fontSize: settings.fontSize),
+            //.baselineOffset: ChordProEditor.baselineOffset(fontSize: settings.fontSize),
             .font: settings.font
         ]
     }
