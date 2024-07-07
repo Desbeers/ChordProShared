@@ -10,11 +10,11 @@ import SwiftUI
 /// SwiftUI `NSViewRepresentable` for a Sharing Service Picker
 public struct SharingServiceRepresentedView: NSViewRepresentable {
     @Binding var isPresented: Bool
-    let url: URL
+    @Binding var url: URL?
     /// Init the `View`
-    public init(isPresented: Binding<Bool>, url: URL) {
+    public init(isPresented: Binding<Bool>, url: Binding<URL?>) {
         self._isPresented = isPresented
-        self.url = url
+        self._url = url
     }
     /// Make the `View`
     public func makeNSView(context: Context) -> NSView {
@@ -23,7 +23,7 @@ public struct SharingServiceRepresentedView: NSViewRepresentable {
     }
     /// Update the `View`
     public func updateNSView(_ nsView: NSView, context: Context) {
-        if isPresented {
+        if isPresented, let url {
             let picker = NSSharingServicePicker(items: [url])
             picker.delegate = context.coordinator
             Task {
@@ -54,13 +54,15 @@ public struct SharingServiceRepresentedView: NSViewRepresentable {
             sharingServicesForItems items: [Any],
             proposedSharingServices proposedServices: [NSSharingService]
         ) -> [NSSharingService] {
-            /// Add a **print** service to the share-menu
-            let image = NSImage(systemName: "printer")
             var share = proposedServices
-            let printService = NSSharingService(title: "Print PDF", image: image, alternateImage: image) {
-                Utils.printDialog(exportURL: self.parent.url)
+            /// Add a **print** service to the share-menu
+            if let url = parent.url {
+                let image = NSImage(systemName: "printer")
+                let printService = NSSharingService(title: "Print PDF", image: image, alternateImage: image) {
+                    Utils.printDialog(exportURL: url)
+                }
+                share.insert(printService, at: 0)
             }
-            share.insert(printService, at: 0)
             return share
         }
         /// Tells the delegate that the person selected a sharing service for the current item

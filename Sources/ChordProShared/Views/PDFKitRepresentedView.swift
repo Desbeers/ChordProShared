@@ -13,11 +13,15 @@ import Quartz
 public struct PDFKitRepresentedView: NSViewRepresentable {
     /// The data of the PDF
     let data: Data
+
+    /// Annotations
+    @Binding private var annotations:  [(userName: String, contents: String)]
+
     /// Init the `View`
     /// - Parameter data: The data of the PDF
-    public init(data: Data) {
-        print("INIT PDF")
+    public init(data: Data, annotations: Binding<[(userName: String, contents: String)]>) {
         self.data = data
+        self._annotations = annotations
     }
     /// Make the `View`
     /// - Parameter context: The context
@@ -26,7 +30,22 @@ public struct PDFKitRepresentedView: NSViewRepresentable {
         /// Create a `PDFView` and set its `PDFDocument`.
         let pdfView = PDFView()
         pdfView.document = PDFDocument(data: data)
-        pdfView.autoScales = true
+        /// Auto scale for macOS Ventura and higher
+        if #available(macOS 13.0, *) {
+            pdfView.autoScales = true
+        }
+        /// Set 'autoScales' at the next run for macOS Monterey or else the PDF will scroll all the way to the bottom on init
+        Task { @MainActor in
+            if #unavailable(macOS 13.0) {
+                pdfView.autoScales = true
+            }
+            /// Get the optional debug info
+            if let firstPage = pdfView.document?.page(at: 0) {
+                for annotation in firstPage.annotations {
+                    annotations.append((annotation.userName ?? "Error", annotation.contents ?? "Error"))
+                }
+            }
+        }
         return pdfView
     }
     /// Update the `View`
@@ -34,14 +53,6 @@ public struct PDFKitRepresentedView: NSViewRepresentable {
     ///   - pdfView: The PDFView
     ///   - context: The context
     public func updateNSView(_ pdfView: PDFView, context: NSViewRepresentableContext<PDFKitRepresentedView>) {
-        print("updateNSView PDF")
-        
-        let newData = PDFDocument(data: data)
-
-        if newData?.string != pdfView.document?.string {
-            print("TEXT CHANGED")
-        }
-        
         /// Animate the transition
         pdfView.animator().isHidden = true
         /// Make sure we have a document with a page
@@ -79,31 +90,5 @@ extension PDFKitRepresentedView {
         let zoom: CGFloat
         /// The location on the page
         let location: NSPoint
-    }
-}
-
-/// Show a PDF preview of the current document
-/// - Note: I don't use the SwiftUI ` .quickLookPreview($url)` here because that seems to conflict with a `NSTextView` in a `NSViewRepresentableContext.
-///         Unsaved documents cannot be previewed on macOS 14 for some unknown reason...
-public struct PreviewView: NSViewRepresentable {
-
-    public init(url: URL) {
-        self.url = url
-    }
-
-    var url: URL
-    public func makeNSView(context: NSViewRepresentableContext<PreviewView>) -> QLPreviewView {
-        let preview = QLPreviewView(frame: .zero, style: .normal)
-        preview?.autostarts = true
-        preview?.previewItem = url as QLPreviewItem
-
-        return preview ?? QLPreviewView()
-    }
-
-    public func updateNSView(_ nsView: QLPreviewView, context: NSViewRepresentableContext<PreviewView>) {
-        
-        print("update QLPreviewView")
-        
-        nsView.previewItem = url as QLPreviewItem
     }
 }

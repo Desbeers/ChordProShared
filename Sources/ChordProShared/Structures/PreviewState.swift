@@ -21,4 +21,8 @@ public struct PreviewState: Equatable {
     public var data: Data?
     /// Bool if the PDF preview is outdated
     public var outdated: Bool = false
+    /// Bool if the preview is active
+    public var active: Bool {
+        return (url != nil || data != nil)
+    }
 }
