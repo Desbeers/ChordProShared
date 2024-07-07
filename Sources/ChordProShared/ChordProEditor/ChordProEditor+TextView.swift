@@ -13,32 +13,33 @@ extension ChordProEditor {
 
     /// The text view for the editor
     public class TextView: NSTextView {
-
+        /// The title of the song
         public var songTitle: String = "New Song"
+        /// The subtitle of the song
         public var songSubtitle: String?
-
         /// The delegate for the ChordProEditor
         var chordProEditorDelegate: ChordProEditorDelegate?
-
         /// The parent
         var parent: ChordProEditor?
-
+        /// All the directives we know about
         var directives: [ChordProDirective] = []
-
+        /// The optional current directive of the paragraph
         var currentDirective: ChordProDirective?
-
+        /// The optional argument of the current directive
         var currentDirectiveArgument: String = ""
+        /// The range of the current directive
         var currentDirectiveRange: NSRange?
-
-//        /// The current fragment of the cursor
-//        var currentFragment: NSTextLayoutFragment?
-
+        /// The rect of the current paragraph
         var currentParagraphRect: NSRect?
-
-//        var lastFragmentReduce: Double = 0
-
         /// The optional double-clicked directive in the editor
         var clickedDirective: Bool = false
+        /// The selected text in the editor
+        public var selectedText: String {
+            if let swiftRange = Range(selectedRange(), in: string) {
+                return String(string[swiftRange])
+            }
+            return ""
+        }
 
         // MARK: Override functions
 
@@ -97,19 +98,14 @@ extension ChordProEditor {
             else {
                 return
             }
-
-
-
             let composeText = textStorage.string as NSString
             let nsRange = composeText.paragraphRange(for: selectedRange)
-
             /// Set the rect of the current paragraph
             currentParagraphRect = layoutManager.boundingRect(forGlyphRange: nsRange, in: textContainer)
             /// Reduce the height of the rect if we have an extra line fragment and are on the last line with content
             if layoutManager.extraLineFragmentTextContainer != nil, NSMaxRange(nsRange) == composeText.length, nsRange.length != 0 {
                 currentParagraphRect?.size.height -= layoutManager.lineHeight
             }
-
             /// Find the optional directive of the fragment
             var directive: ChordProDirective?
             textStorage.enumerateAttribute(.directive, in: nsRange) {values, _, _ in
@@ -126,7 +122,6 @@ extension ChordProEditor {
             }
             /// Get the range of the directive for optional editing
             var directiveRange: NSRange?
-
             if currentDirective != nil {
                 textStorage.enumerateAttribute(.directiveRange, in: nsRange) {values, _, _ in
                     if let value = values as? NSRange {
@@ -134,17 +129,12 @@ extension ChordProEditor {
                     }
                 }
             }
-
+            /// Set the found values
             currentDirective = directive
             currentDirectiveArgument = directiveArgument?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             currentDirectiveRange = directiveRange
-
-            //currentFragment = fragment
-
+            /// Run introspect to inform the SwiftUI `View`
             parent?.runIntrospect(self)
-
-            setNeedsDisplay(bounds)
-
         }
     }
 }

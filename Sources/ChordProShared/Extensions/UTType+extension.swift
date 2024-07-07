@@ -10,7 +10,7 @@ import UniformTypeIdentifiers
 
 public extension UTType {
 
-    // MARK: The `UTType` for a `ChordPro` document
+    // MARK: The `UTType` for a `ChordPro` song
 
     /// The `UTType` for a ChordPro song
     static let chordProSong =

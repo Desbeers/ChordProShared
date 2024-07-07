@@ -1,5 +1,5 @@
 //
-//  Utils+printDialog.swift
+//  AppKitUtils+printDialog.swift
 //  ChordProShared
 //
 //  Created by Nick Berendsen on 28/06/2024.
@@ -8,7 +8,7 @@
 import AppKit
 import PDFKit
 
-extension Utils {
+extension AppKitUtils {
 
     /// Show a `AppKit` *Print Dialog* for the current PDF
     /// - Parameter exportURL: The URL of the export PDF

@@ -120,7 +120,7 @@ extension ChordProEditor {
             scrollView.documentView = textView
         }
 
-        // MARK: MacEditorDelegate
+        // MARK: ChordProEditorDelegate
 
         /// A delegate function to update a view
         func selectionNeedsDisplay() {

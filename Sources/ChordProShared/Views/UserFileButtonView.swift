@@ -32,7 +32,7 @@ public struct UserFileButtonView<T: UserFile>: View {
     public var body: some View {
         Button(
             action: {
-                try? Utils.openPanel(userFile: userFile) {
+                try? AppKitUtils.openPanel(userFile: userFile) {
                     action()
                     label = userFile.label
                 }

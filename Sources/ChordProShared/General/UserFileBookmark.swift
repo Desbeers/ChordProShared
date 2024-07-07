@@ -21,7 +21,7 @@ extension UserFileBookmark {
     /// - Returns: An URL if found
     public static func getBookmarkURL<T: UserFile>(_ bookmark: T) throws -> URL? {
         guard let bookmarkData = UserDefaults.standard.data(forKey: bookmark.id) else {
-            throw AppError.userFileNotFound
+            throw CocoaError(.fileReadUnknown)
         }
         do {
             var bookmarkDataIsStale = false

@@ -1,5 +1,5 @@
 //
-//  Utils+openPanel.swift
+//  AppKitUtils+openPanel.swift
 //  ChordProShared
 //
 //  Created by Nick Berendsen on 28/06/2024.
@@ -9,7 +9,7 @@ import AppKit
 import UniformTypeIdentifiers
 import OSLog
 
-extension Utils {
+extension AppKitUtils {
 
     /// Show an `AppKit` `NSOpenPanel`
     ///
@@ -23,7 +23,7 @@ extension Utils {
     public static func openPanel<T: UserFile>(userFile: T, action: @escaping () -> Void) throws {
         /// Make sure we have a window to attach the sheet
         guard let window = NSApp.keyWindow else {
-            throw AppError.noKeyWindow
+            throw CocoaError(.featureUnsupported)
         }
         let lastSelectedURL = try UserFileBookmark.getBookmarkURL(userFile)
         let openPanel = NSOpenPanel()

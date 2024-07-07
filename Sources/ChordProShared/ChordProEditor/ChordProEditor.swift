@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// MARK: The ChordPro editor
+
 /// SwiftUI `NSViewRepresentable` for the **ChordPro** editor
 public struct ChordProEditor: NSViewRepresentable {
     /// The `Binding` to the text of the document
@@ -17,8 +19,6 @@ public struct ChordProEditor: NSViewRepresentable {
     let directives: [ChordProDirective]
     /// The 'introspect' callback with the editor``Internals``
     private(set) var introspect: IntrospectCallback?
-
-    //@State var textView: TextView?
 
     /// Init the **ChordPro** editor
     /// - Parameters:
@@ -49,7 +49,6 @@ public struct ChordProEditor: NSViewRepresentable {
         wrapper.textView.string = text
         /// Wait for next cycle and set the textview as first responder
         Task { @MainActor in
-            //self.textView = wrapper.textView
             highlightText(textView: wrapper.textView)
             wrapper.textView.selectedRanges = [NSValue(range: NSRange())]
             wrapper.textView.window?.makeFirstResponder(wrapper.textView)

@@ -116,15 +116,22 @@ extension ChordProEditor {
                         width: rect.width,
                         height: lineRect.height
                     )
+                    /// Bool if the line should be highlighted
+                    let highlight = markerRect.minY == textView.currentParagraphRect?.minY
+
                     /// Draw the line number
                     drawLineNumber(
                         linePosition.lineNumber,
                         inRect: markerRect,
-                        highlight: markerRect.minY == textView.currentParagraphRect?.minY
+                        highlight: highlight
                     )
                     /// Draw a symbol if we have a known directive
                     if let directive {
-                        drawDirectiveIcon(directive, inRect: markerRect)
+                        drawDirectiveIcon(
+                            directive,
+                            inRect: markerRect,
+                            highlight: highlight
+                        )
                     }
                     /// Update the positions
                     linePosition.lineStart += linePosition.lineLength
@@ -147,7 +154,7 @@ extension ChordProEditor {
                 )
             }
             /// Draw the number of the line
-            func drawLineNumber(_ number: Int, inRect rect: NSRect, highlight: Bool = false) {
+            func drawLineNumber(_ number: Int, inRect rect: NSRect, highlight: Bool) {
                 var attributes = ChordProEditor.rulerNumberStyle
                 attributes[NSAttributedString.Key.font] = font
                 switch highlight {
@@ -156,7 +163,7 @@ extension ChordProEditor {
                     context.fill(rect)
                     attributes[NSAttributedString.Key.foregroundColor] = NSColor.textColor
                 case false:
-                    attributes[NSAttributedString.Key.foregroundColor] = NSColor.systemGray
+                    attributes[NSAttributedString.Key.foregroundColor] = NSColor.secondaryLabelColor
                 }
                 /// Define the rect of the string
                 var stringRect = rect
@@ -167,18 +174,24 @@ extension ChordProEditor {
                 NSString(string: "\(number)").draw(in: stringRect, withAttributes: attributes)
             }
             /// Draw the directive icon of the line
-            func drawDirectiveIcon(_ directive: ChordProDirective, inRect rect: NSRect) {
+            func drawDirectiveIcon(_ directive: ChordProDirective, inRect rect: NSRect, highlight: Bool) {
                 var iconRect = rect
                 let imageAttachment = NSTextAttachment()
                 let imageConfiguration = NSImage.SymbolConfiguration(pointSize: font.pointSize * 0.7, weight: .medium)
-                imageAttachment.image = NSImage(systemName: directive.icon).withSymbolConfiguration(imageConfiguration)
-                let imageString = NSMutableAttributedString(attachment: imageAttachment)
-                imageString.addAttributes([.foregroundColor: NSColor.secondaryLabelColor], range: NSRange(location: 0, length: imageString.length))
-                let imageSize = imageString.size()
-                let offset = (rect.height - imageSize.height) * 0.5
-                iconRect.origin.x += iconRect.width - (imageSize.width * 1.4)
-                iconRect.origin.y += (offset)
-                imageString.draw(in: iconRect)
+                if let image = NSImage(systemSymbolName: directive.icon, accessibilityDescription: directive.label) {
+                    imageAttachment.image = image.withSymbolConfiguration(imageConfiguration)
+                    let imageString = NSMutableAttributedString(attachment: imageAttachment)
+                    imageString.addAttribute(
+                        .foregroundColor,
+                        value: highlight ? NSColor.textColor : NSColor.secondaryLabelColor,
+                        range: NSRange(location: 0, length: imageString.length)
+                    )
+                    let imageSize = imageString.size()
+                    let offset = (rect.height - imageSize.height) * 0.5
+                    iconRect.origin.x += iconRect.width - (imageSize.width * 1.4)
+                    iconRect.origin.y += (offset)
+                    imageString.draw(in: iconRect)
+                }
             }
             /// Get optional directive argument inside the range
             func getDirectiveArgument(nsRange: NSRange) -> String? {

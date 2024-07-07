@@ -15,11 +15,11 @@ extension ChordProEditor {
     static let lineHeightMultiple: Double = 1.6
 
     /// The style of a number in the ruler
-    static var rulerNumberStyle: SWIFTStringAttribute {
+    static var rulerNumberStyle: [NSAttributedString.Key: Any] {
         let lineNumberStyle = NSMutableParagraphStyle()
         lineNumberStyle.alignment = .right
         lineNumberStyle.lineHeightMultiple = lineHeightMultiple
-        var fontAttributes: SWIFTStringAttribute = [:]
+        var fontAttributes: [NSAttributedString.Key: Any] = [:]
         fontAttributes[NSAttributedString.Key.paragraphStyle] = lineNumberStyle
         return fontAttributes
     }
