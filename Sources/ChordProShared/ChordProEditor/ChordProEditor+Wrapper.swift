@@ -52,9 +52,6 @@ extension ChordProEditor {
             let contentSize = scrollView.contentSize
             let textStorage = NSTextStorage()
             let layoutManager = LayoutManager()
-
-            //layoutManager.allowsNonContiguousLayout = true
-
             textStorage.addLayoutManager(layoutManager)
 
             let textContainer = NSTextContainer(containerSize: scrollView.frame.size)
@@ -106,11 +103,6 @@ extension ChordProEditor {
             lineNumbers.orientation = .verticalRuler
             lineNumbers.clientView = textView
             lineNumbers.ruleThickness = 40
-//
-//            scrollView.hasVerticalRuler = true
-//            scrollView.rulersVisible = true
-
-            scrollView.translatesAutoresizingMaskIntoConstraints = false
 
             scrollView.verticalRulerView = lineNumbers
 
@@ -127,37 +119,6 @@ extension ChordProEditor {
         func setupTextView() {
             scrollView.documentView = textView
         }
-
-//        // MARK: Layout Manager Delegate
-//
-//        // swiftlint:disable:next function_parameter_count
-//        public func layoutManager(
-//            _ layoutManager: NSLayoutManager,
-//            shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<NSRect>,
-//            lineFragmentUsedRect: UnsafeMutablePointer<NSRect>,
-//            baselineOffset: UnsafeMutablePointer<CGFloat>,
-//            in textContainer: NSTextContainer,
-//            forGlyphRange glyphRange: NSRange
-//        ) -> Bool {
-//            print("Layout Manager Delegate")
-//            let font: NSFont = textView.font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
-//
-//            let fontLineHeight = layoutManager.defaultLineHeight(for: font)
-//            let lineHeight = fontLineHeight * ChordProEditor.lineHeightMultiple
-//            let baselineNudge = (lineHeight - fontLineHeight) * 0.5
-//
-//            var rect = lineFragmentRect.pointee
-//            rect.size.height = lineHeight
-//
-//            var usedRect = lineFragmentUsedRect.pointee
-//            usedRect.size.height = max(lineHeight, usedRect.size.height) // keep emoji sizes
-//
-//            lineFragmentRect.pointee = rect
-//            lineFragmentUsedRect.pointee = usedRect
-//            baselineOffset.pointee += baselineNudge
-//
-//            return true
-//        }
 
         // MARK: MacEditorDelegate
 

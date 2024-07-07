@@ -14,22 +14,6 @@ extension ChordProEditor {
     /// The line height multiplier for the editor text
     static let lineHeightMultiple: Double = 1.6
 
-    /// The style of a paragraph in the editor
-    static let paragraphStyle: NSParagraphStyle = {
-        let style = NSMutableParagraphStyle()
-        //style.lineHeightMultiple = ChordProEditor.lineHeightMultiple
-        return style
-    }()
-
-    static func baselineOffset(fontSize: Double) -> Double {
-        return ((fontSize * ChordProEditor.lineHeightMultiple) - fontSize) * 4
-    }
-
-    static func totalLineHeight(fontSize: CGFloat? = nil) -> Double {
-        let fontSize = fontSize ?? 14
-        return (fontSize * ChordProEditor.lineHeightMultiple) + ChordProEditor.baselineOffset(fontSize: fontSize)
-    }
-
     /// The style of a number in the ruler
     static var rulerNumberStyle: SWIFTStringAttribute {
         let lineNumberStyle = NSMutableParagraphStyle()
@@ -37,27 +21,14 @@ extension ChordProEditor {
         lineNumberStyle.lineHeightMultiple = lineHeightMultiple
         var fontAttributes: SWIFTStringAttribute = [:]
         fontAttributes[NSAttributedString.Key.paragraphStyle] = lineNumberStyle
-        fontAttributes[NSAttributedString.Key.backgroundColor] = NSColor.clear
-        fontAttributes[NSAttributedString.Key.foregroundColor] = highlightedForegroundColor
-
-        return fontAttributes
-    }
-
-    /// The style of a symbol in the ruler
-    static var rulerSymbolStyle: SWIFTStringAttribute {
-        let lineNumberStyle = NSMutableParagraphStyle()
-        lineNumberStyle.alignment = .right
-        lineNumberStyle.lineHeightMultiple = lineHeightMultiple
-        var fontAttributes: SWIFTStringAttribute = [:]
-        fontAttributes[NSAttributedString.Key.paragraphStyle] = lineNumberStyle
-        fontAttributes[NSAttributedString.Key.backgroundColor] = NSColor.clear
-        fontAttributes[NSAttributedString.Key.foregroundColor] = highlightedForegroundColor
-
         return fontAttributes
     }
 
     /// The foreground of the highlighted line in the editor
-    static let highlightedForegroundColor: NSColor = .controlAccentColor.withAlphaComponent(0.06)
+    /// - Note: A `var` to keep it up-to-date when the accent color is changed
+    static var highlightedForegroundColor: NSColor {
+        return .controlAccentColor.withAlphaComponent(0.06)
+    }
 
     /// The background of the highlighted line in the editor
     static let highlightedBackgroundColor: NSColor = .gray.withAlphaComponent(0.1)

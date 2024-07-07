@@ -29,6 +29,8 @@ extension ChordProEditor {
     static let pangoRegex = try! NSRegularExpression(pattern: "<\\/?[^>]*>")
     /// The regex for brackets
     static let bracketsRegex = try! NSRegularExpression(pattern: "\\/?[\\[\\]\\{\\}\"]")
+    /// The regex for new lines
+    static let newLineRegex = try! NSRegularExpression(pattern: "\n", options: [])
 
     // swiftlint:enable force_try
 
@@ -63,9 +65,7 @@ extension ChordProEditor {
         /// Make all text in the default style
         view.textStorage?.setAttributes(
             [
-                .paragraphStyle: ChordProEditor.paragraphStyle,
                 .foregroundColor: NSColor.textColor,
-                //.baselineOffset: ChordProEditor.baselineOffset(fontSize: settings.fontSize),
                 .font: settings.font
             ],
             range: range
@@ -129,9 +129,7 @@ extension ChordProEditor {
         
         /// The attributes for the next typing
         view.typingAttributes = [
-            .paragraphStyle: ChordProEditor.paragraphStyle,
             .foregroundColor: NSColor.textColor,
-            //.baselineOffset: ChordProEditor.baselineOffset(fontSize: settings.fontSize),
             .font: settings.font
         ]
     }
