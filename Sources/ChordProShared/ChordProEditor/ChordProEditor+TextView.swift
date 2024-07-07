@@ -14,6 +14,9 @@ extension ChordProEditor {
     /// The text view for the editor
     public class TextView: NSTextView {
 
+        public var songTitle: String = "New Song"
+        public var songSubtitle: String?
+
         /// The delegate for the ChordProEditor
         var chordProEditorDelegate: ChordProEditorDelegate?
 

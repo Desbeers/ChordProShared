@@ -98,6 +98,17 @@ extension ChordProEditor {
                             directive = textView.directives.first(where: {$0.directive == value})
                         }
                     }
+                    if let directive {
+                        /// Get some details to suggest a proper export file name
+                        switch directive.directive {
+                        case "t", "title":
+                            textView.songTitle = getDirectiveArgument(nsRange: nsRange) ?? "New Song"
+                        case "st", "subtitle", "artist":
+                            textView.songSubtitle = getDirectiveArgument(nsRange: nsRange)
+                        default:
+                            break
+                        }
+                    }
                     /// Set the marker rect
                     let markerRect = NSRect(
                         x: 0,
@@ -168,6 +179,16 @@ extension ChordProEditor {
                 iconRect.origin.x += iconRect.width - (imageSize.width * 1.4)
                 iconRect.origin.y += (offset)
                 imageString.draw(in: iconRect)
+            }
+            /// Get optional directive argument inside the range
+            func getDirectiveArgument(nsRange: NSRange) -> String? {
+                var string: String?
+                textStorage.enumerateAttribute(.directiveArgument, in: nsRange) {values, _, _ in
+                    if let value = values as? String {
+                        string = value.trimmingCharacters(in: .whitespacesAndNewlines)
+                    }
+                }
+                return string
             }
         }
     }
