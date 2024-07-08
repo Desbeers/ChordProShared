@@ -15,12 +15,12 @@ extension AppKitUtils {
     public struct PDFKitRepresentedView: NSViewRepresentable {
         /// The data of the PDF
         let data: Data
-
-        /// Annotations
+        /// The optional annotations
         @Binding private var annotations:  [(userName: String, contents: String)]
-
         /// Init the `View`
-        /// - Parameter data: The data of the PDF
+        /// - Parameters:
+        ///   - data: The data of the PDF
+        ///   - annotations: The optional annotations
         public init(data: Data, annotations: Binding<[(userName: String, contents: String)]>) {
             self.data = data
             self._annotations = annotations
@@ -85,6 +85,7 @@ extension AppKitUtils {
 }
 
 extension AppKitUtils.PDFKitRepresentedView {
+
     /// The view parameters of a PDF
     struct PDFParameters {
         /// The page index

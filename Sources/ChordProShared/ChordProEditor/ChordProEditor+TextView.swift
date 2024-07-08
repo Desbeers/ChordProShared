@@ -83,6 +83,8 @@ extension ChordProEditor {
 
         // MARK: Custom functions
 
+        /// Replace the whole text with a new text
+        /// - Parameter text: The replacement text
         public func replaceText(text: String) {
             let composeText = self.string as NSString
             self.insertText(text, replacementRange: NSRange(location: 0, length: composeText.length))

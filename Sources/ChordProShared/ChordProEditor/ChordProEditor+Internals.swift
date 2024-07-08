@@ -8,7 +8,8 @@
 import Foundation
 
 extension ChordProEditor {
-
+    
+    /// Share internal editor stuff with the SwiftUI `View`
     public struct Internals: Sendable {
 
         public init(
@@ -26,13 +27,17 @@ extension ChordProEditor {
             self.selectedRange = selectedRange
             self.textView = textView
         }
-
+        /// The optional directive in the current paragraph
         public var directive: ChordProDirective?
+        /// The optional directive argument in the current paragraph
         public var directiveArgument: String
+        /// The range of the optional detection
         public var directiveRange: NSRange?
-        /// Click detection
+        /// Bool if the directive is double-clicked
         public var clickedDirective: Bool = false
+        /// The currently selected range
         public var selectedRange = NSRange()
+        /// The ``textView``
         public var textView: TextView?
     }
 }

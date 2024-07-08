@@ -8,10 +8,14 @@
 import AppKit
 
 extension ChordProEditor {
-
+    
+    /// The type of regex
     enum RegexType {
+        /// Normal; only apply a color to the match
         case normal
+        /// Range; apply a color and the range of the match
         case range
+        /// Argument; apply a color and the argument of the match
         case argument
     }
 

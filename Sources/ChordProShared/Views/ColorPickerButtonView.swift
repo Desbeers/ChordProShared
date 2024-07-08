@@ -39,12 +39,14 @@ public struct ColorPickerButtonView: View {
         .white,
         .yellow
     ]
-
+    /// Init the struct
+    /// - Parameters:
+    ///   - selectedColor: Binding to the selected color
+    ///   - label: The label for the color picker
     public init(selectedColor: Binding<Color>, label: String) {
         self._selectedColor = selectedColor
         self.label = label
     }
-
     /// The body of the `View`
     public var body: some View {
         HStack {

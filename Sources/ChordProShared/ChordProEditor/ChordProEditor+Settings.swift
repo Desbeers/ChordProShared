@@ -73,14 +73,14 @@ extension ChordProEditor.Settings {
             return NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
         }
         /// The calculated font for the `SettingsView`
-        public func font(size: Double) -> Font {
+        public func font() -> Font {
             switch self {
             case .monospaced:
-                return .system(size: size, weight: .regular, design: .monospaced)
+                return .system(.body, design: .monospaced)
             case .serif:
-                return .system(size: size, weight: .regular, design: .serif)
+                return .system(.body, design: .serif)
             case .sansSerif:
-                return .system(size: size, weight: .regular, design: .default)
+                return .system(.body, design: .default)
             }
         }
     }

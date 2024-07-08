@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// The state of a PDF preview
 public struct PreviewState: Equatable {
     /// Init the preview state
     /// - Parameters:

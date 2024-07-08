@@ -11,7 +11,7 @@ import OSLog
 
 extension AppKitUtils {
 
-    /// Show an `AppKit` `NSOpenPanel`
+    /// Show an `AppKit` *NSOpenPanel*
     ///
     /// I don't use the `SwiftUI` `.fileImporter` here because it is too limited;
     /// especially on macOS versions lower than 14.

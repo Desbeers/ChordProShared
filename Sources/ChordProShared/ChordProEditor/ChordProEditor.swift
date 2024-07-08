@@ -34,13 +34,14 @@ public struct ChordProEditor: NSViewRepresentable {
         self.settings = settings
         self.directives = directives
     }
-
     /// Make a `coordinator` for the `NSViewRepresentable`
     /// - Returns: A `coordinator`
     public func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    /// Make the `View`
+    /// - Parameter context: The context
+    /// - Returns: The wrapped editor
     public func makeNSView(context: Context) -> Wrapper {
         let wrapper = Wrapper()
         wrapper.delegate = context.coordinator
@@ -55,7 +56,10 @@ public struct ChordProEditor: NSViewRepresentable {
         }
         return wrapper
     }
-
+    /// Update the `View`
+    /// - Parameters:
+    ///   - view: The wrapped editor
+    ///   - context: The context
     public func updateNSView(_ view: Wrapper, context: Context) {
         if context.coordinator.parent.settings != settings {
             context.coordinator.parent = self
@@ -64,7 +68,10 @@ public struct ChordProEditor: NSViewRepresentable {
             view.textView.chordProEditorDelegate?.selectionNeedsDisplay()
         }
     }
-
+    /// Highlight the text in the editor
+    /// - Parameters:
+    ///   - textView: The current ``TextView``
+    ///   - range: The range to highlight
     @MainActor func highlightText(textView: NSTextView, range: NSRange? = nil) {
         ChordProEditor.highlight(
             view: textView,
@@ -74,6 +81,8 @@ public struct ChordProEditor: NSViewRepresentable {
         )
     }
 }
+
+// MARK: Introspect extensions
 
 extension ChordProEditor {
 

@@ -11,7 +11,9 @@ extension AppKitUtils {
 
     /// SwiftUI `NSViewRepresentable` for a Sharing Service Picker
     public struct SharingServiceRepresentedView: NSViewRepresentable {
+        /// Bool to show the sharing picker
         @Binding var isPresented: Bool
+        /// The URL of the document to share
         @Binding var url: URL?
         /// Init the `View`
         public init(isPresented: Binding<Bool>, url: Binding<URL?>) {
@@ -31,7 +33,6 @@ extension AppKitUtils {
                 Task {
                     picker.show(relativeTo: .zero, of: nsView, preferredEdge: .minY)
                     isPresented = false
-
                 }
             }
         }
